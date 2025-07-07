@@ -1,0 +1,27 @@
+class Solution {
+    private void reverse(List<Integer>ans){
+        int start=0;
+        int end=ans.size()-1;
+        while(start<=end){
+            Integer temp=Integer.valueOf(ans.get(start));
+            ans.set(start,ans.get(end));
+            ans.set(end,temp);
+            start++;
+            end--;
+        }
+    }
+    public ArrayList<Integer> leaders(int[] nums) {
+        ArrayList<Integer> ans=new ArrayList<>();
+        int maxElement=nums[nums.length-1];
+        ans.add(maxElement);
+
+        for(int i=nums.length-2;i>=0;i--){
+            if(nums[i]>=maxElement){
+                ans.add(nums[i]);
+                maxElement=nums[i];
+            }
+        }
+        reverse(ans);
+        return ans;
+    }
+}
