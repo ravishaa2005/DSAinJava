@@ -1,0 +1,53 @@
+class Solution {
+    public int minDays(int[] bloomDay, int m, int k) {
+        if(bloomDay.length<m*k) return -1;
+        int start=minElement(bloomDay);
+        int end=maxElement(bloomDay);
+        int ans=-1;
+        while(start<=end){
+            int mid=start+(end-start)/2;
+            if(isPossible(bloomDay,mid,m,k)==true){
+                ans=mid;
+                end=mid-1;
+            }else{
+                start=mid+1;
+            }
+        }
+        return ans;
+    }
+    private boolean isPossible(int[]arr,int days,int m,int k){
+        int count=0;
+        int noOfBouquets=0;
+        for(int i=0;i<arr.length;i++){
+            if(arr[i]<=days){
+                count++;
+            }else{
+                noOfBouquets+=count/k;
+                count=0;
+            }
+        }
+        noOfBouquets+=count/k;
+        if(noOfBouquets>=m){
+            return true;
+        }
+        return false;
+    }
+    private int minElement(int[] arr){
+        int min=Integer.MAX_VALUE;
+        for(int i=0;i<arr.length;i++){
+            if(arr[i]<min){
+                min=arr[i];
+            }
+        }
+        return min;
+    }
+    private int maxElement(int[]arr){
+        int max=Integer.MIN_VALUE;
+        for(int i =0;i<arr.length;i++){
+            if(arr[i]>max){
+                max=arr[i];
+            }
+        }
+        return max;
+    }
+}
