@@ -1,0 +1,45 @@
+class Solution {
+    public int shipWithinDays(int[] weights, int days) {
+        int ans=-1;
+        int start=maxElement(weights);
+        int end=totalSum(weights);
+        while(start<=end){
+            int mid=start+(end-start)/2;
+            int daysNeededShipping=daysRequired(weights,mid);
+            if(daysNeededShipping<=days){
+                ans=mid;
+                end=mid-1;
+            }else{
+                start=mid+1;
+            }
+        }
+        return ans;
+    }
+    private int daysRequired(int[]weight,int capacity){
+        int days=1;
+        int load=0;
+        for(int i=0;i<weight.length;i++){
+            if(load+weight[i]>capacity){
+                days=days+1;
+                load=weight[i];
+            }else{
+                load+=weight[i];
+            }
+        }
+        return days;
+    }
+    private int maxElement(int[]weight){
+        int max=Integer.MIN_VALUE;
+        for(int i=0;i<weight.length;i++){
+            max=Math.max(max,weight[i]);
+        }
+        return max;
+    }
+    private int totalSum(int[]weight){
+        int sum=0;
+        for(int i=0;i<weight.length;i++){
+            sum+=weight[i];
+        }
+        return sum;
+    }
+}
