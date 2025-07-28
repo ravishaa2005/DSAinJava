@@ -1,0 +1,57 @@
+class Solution {
+    public Node copyRandomList(Node head) {
+        //create deep copy
+        Node t1=head;
+        Node head2=new Node(0);
+        Node t2=head2;
+        while(t1!=null){
+            Node a=new Node(t1.val);
+            t2.next=a;
+            t2=a;
+            t1=t1.next;
+        }
+        head2=head2.next;
+        t1=head;
+        t2=head2;
+
+        //assigning alternate connections
+        Node head3=new Node(0);
+        Node t=head3;
+        while(t1!=null){
+        t.next=t1;
+        t1=t1.next;
+        t=t.next;
+
+        t.next=t2;
+        t2=t2.next;
+        t=t.next;
+        }
+
+        //assigning random pointers
+        t=head3;
+        t2=head2;
+        t1=head;
+        while(t1!=null && t2!=null){
+        if(t1.random==null) t2.random=null;
+        else{
+            t2.random=t1.random.next;
+        }
+        t1=t1.next.next;
+        if(t2.next==null)break;
+        t2=t2.next.next;
+        }
+
+        //seperating lists
+        t2=head2;
+        t1=head;
+        while(t1!=null){
+            t1.next=t2.next;
+            t1=t1.next;
+            if(t1==null)break;
+            t2.next=t1.next;
+            if(t2==null) break;
+            t2=t2.next;
+        }
+        return head2;
+    }
+}
