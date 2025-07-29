@@ -1,0 +1,35 @@
+class Solution {
+    public List<String> findPath(int[][] grid) {
+        int n=grid.length;
+        List<String> s=print(0,0,n-1,n-1,"",grid);
+        if (s.isEmpty()) {
+        s.add("-1"); 
+    }
+        return s;
+    }
+    private List<String> print(int sr,int sc,int er,int ec,String s,int[][]maze){
+        List<String> str=new ArrayList<>();
+        if(sr>er || sc>ec) return str;
+        if(sr<0 || sc<0) return str;
+        if(sr==er && sc==ec){
+            str.add(s);
+            return str;
+        }
+        if(maze[sr][sc]==0) return str;//blocked
+        if(maze[sr][sc]==-1) return str;//already visited
+
+        maze[sr][sc]=-1;//visited
+        //go up
+        str.addAll(print(sr-1,sc,er,ec,s+"U",maze));
+        //go down
+        str.addAll(print(sr+1,sc,er,ec,s+"D",maze));
+        //go left
+        str.addAll(print(sr,sc-1,er,ec,s+"L",maze));
+        //go right
+        str.addAll(print(sr,sc+1,er,ec,s+"R",maze));
+
+        maze[sr][sc]=1;//not visted backtrack
+
+        return str;
+    }
+}
