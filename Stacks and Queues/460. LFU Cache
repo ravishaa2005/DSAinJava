@@ -1,0 +1,101 @@
+class LFUCache {
+    class Node{
+        int key,val;
+        int frequency;
+        Node prev;
+        Node next;
+
+        Node(int key,int val){
+            this.key=key;
+            this.val=val;
+            this.frequency=1;
+        }
+    }
+    class DoubleLinkedList{
+            int listSize;
+            Node head;
+            Node tail;
+            public DoubleLinkedList(){
+                this.head=new Node(-1,-1);
+                this.tail=new Node(-1,-1);
+                head.next=tail;
+                tail.prev=head;
+                this.listSize=0;
+            }
+    public void addNode(Node node){
+            node.next=head.next;
+            head.next.prev=node;
+            node.prev=head;
+            head.next=node;
+            listSize++;
+        }
+
+    public void removeNode(Node node){
+            Node prevNode=node.prev;
+            Node nextNode=node.next;
+            prevNode.next=nextNode;
+            nextNode.prev=prevNode;
+            listSize--;
+    }
+    }
+    int capacity;
+    int curSize;
+    int minFrequency;
+    Map<Integer,Node> map;
+    Map<Integer,DoubleLinkedList> freqMap;
+        
+
+    public LFUCache(int capacity) {
+        this.capacity=capacity;
+        this.curSize=0;
+        this.minFrequency=0;
+
+        map=new HashMap<>();
+        freqMap=new HashMap<>();
+    }
+    
+    public int get(int key) {
+        if(!map.containsKey(key)) return -1;
+        Node curNode=map.get(key);
+        updateNode(curNode);
+        return curNode.val;
+    }
+
+
+    public void updateNode(Node curNode){
+        int curFreq=curNode.frequency;
+        DoubleLinkedList curList=freqMap.get(curFreq);
+        curList.removeNode(curNode);
+
+        if (curFreq == minFrequency && curList.listSize == 0){
+            minFrequency++;
+        }
+        curNode.frequency++;
+        DoubleLinkedList newList=freqMap.getOrDefault(curNode.frequency,new DoubleLinkedList());
+        newList.addNode(curNode);
+        freqMap.put(curNode.frequency,newList);
+    }
+    
+    public void put(int key, int value) {
+        if(capacity==0) return;
+        if(map.containsKey(key)){
+            Node curNode=map.get(key);
+            curNode.val=value;
+            updateNode(curNode);
+        }else{
+            curSize++;
+            if(curSize>capacity){
+                DoubleLinkedList minFreqList=freqMap.get(minFrequency);
+                map.remove(minFreqList.tail.prev.key);
+                minFreqList.removeNode(minFreqList.tail.prev);
+                curSize--;
+            }
+            minFrequency=1;
+            Node newNode=new Node(key,value);
+            DoubleLinkedList curList=freqMap.getOrDefault(1,new DoubleLinkedList());
+            curList.addNode(newNode);
+            freqMap.put(1,curList);
+            map.put(key,newNode);
+        }
+    }
+}
